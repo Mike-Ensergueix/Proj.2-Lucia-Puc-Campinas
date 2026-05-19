@@ -118,7 +118,8 @@ void ler_nome()
             // Se não achou o '\n', significa que o usuário digitou mais de 70 caracteres
             printf("\n\tNome invalido! O nome deve ter no maximo 70 caracteres.");
             printf("\n\tDigite novamente: ");
-            while (getchar() != '\n'); // Limpa o resto do nome que ficou preso no buffer
+            int c;
+            while ((c = getchar()) != '\n' && c != EOF); // Limpa só se sobrou lixo
             continue;
         }
 
@@ -169,22 +170,25 @@ void ler_nome()
 void ler_setor()
 {
     int valido = 0;
+    char temp[20]; // Buffer temporário maior para capturar o excesso
 
     do
     {
-        fgets(operadores[totalOperadores].setor, 5, stdin);
+        // Lendo na variável temporária
+        fgets(temp, sizeof(temp), stdin);
         
-        // CORREÇÃO: Mesma lógica segura usada no ler_id()
-        char *p = strchr(operadores[totalOperadores].setor, '\n');
+        // Remove o '\n' se ele existir dentro do limite do buffer
+        char *p = strchr(temp, '\n');
         if (p != NULL) {
-            *p = '\0'; // Remove o '\n' se ele existir
+            *p = '\0'; 
         } else {
+            // Se não achou o '\n', limpa o resto do lixo do buffer do teclado
             int c;
-            while ((c = getchar()) != '\n' && c != EOF); // Limpa só se sobrou lixo
+            while ((c = getchar()) != '\n' && c != EOF);
         }
 
-        // 1ª Validação: Verificar o tamanho exato de 4 caracteres
-        if (strlen(operadores[totalOperadores].setor) != 4)
+        // 1ª Validação: Agora pegamos o tamanho REAL digitado pelo usuário
+        if (strlen(temp) != 4)
         {
             printf("\n\tSetor invalido! Deve conter exatamente 4 caracteres.");
             printf("\n\tDigite novamente: ");
@@ -192,10 +196,10 @@ void ler_setor()
         }
 
         // 2ª Validação: Verificar o formato (2 letras seguidas de 2 dígitos)
-        if (!isalpha(operadores[totalOperadores].setor[0]) ||
-            !isalpha(operadores[totalOperadores].setor[1]) ||
-            !isdigit(operadores[totalOperadores].setor[2]) ||
-            !isdigit(operadores[totalOperadores].setor[3]))
+        if (!isalpha(temp[0]) ||
+            !isalpha(temp[1]) ||
+            !isdigit(temp[2]) ||
+            !isdigit(temp[3]))
         {
             printf("\n\tSetor invalido! Deve ser composto por 2 letras e 2 digitos (Ex: AB12).");
             printf("\n\tDigite novamente: ");
@@ -203,9 +207,11 @@ void ler_setor()
         }
 
         // Converte as duas primeiras letras para maiúsculo automaticamente
-        operadores[totalOperadores].setor[0] = toupper(operadores[totalOperadores].setor[0]);
-        operadores[totalOperadores].setor[1] = toupper(operadores[totalOperadores].setor[1]);
+        temp[0] = toupper(temp[0]);
+        temp[1] = toupper(temp[1]);
 
+        // Se passou por todas as travas, copia o dado seguro para a struct
+        strcpy(operadores[totalOperadores].setor, temp);
         valido = 1;
 
     } while (!valido);
