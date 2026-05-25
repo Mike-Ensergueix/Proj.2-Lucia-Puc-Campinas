@@ -32,18 +32,18 @@ int totalEquipamentos = 0;
 
 void ler_id()
 {
-    int valido = 0; 
+    int valido = 0;
     char temp[20]; // Buffer temporário maior para capturar o excesso digitado
 
     do
     {
         // Lendo em uma variável temporária maior
         fgets(temp, sizeof(temp), stdin);
-        
+
         // Remove o '\n' se ele existir dentro do limite do buffer
         char *p = strchr(temp, '\n');
         if (p != NULL) {
-            *p = '\0'; 
+            *p = '\0';
         } else {
             // Se não achou o '\n', o usuário digitou algo absurdamente longo. Limpa o resto.
             int c;
@@ -55,7 +55,7 @@ void ler_id()
         {
             printf("\n\tID invalido! Deve conter exatamente 4 digitos.");
             printf("\n\tDigite novamente: ");
-            continue; 
+            continue;
         }
 
         // 2ª Validação: Verificar se todos os caracteres são dígitos numéricos
@@ -73,7 +73,7 @@ void ler_id()
         {
             printf("\n\tID invalido! Deve conter apenas digitos.");
             printf("\n\tDigite novamente: ");
-            continue; 
+            continue;
         }
 
         // 3ª Validação: Verificação de ID duplicado
@@ -91,7 +91,7 @@ void ler_id()
         {
             printf("\n\tID invalido! Operador com esse ID ja cadastrado.");
             printf("\n\tDigite novamente: ");
-            continue; 
+            continue;
         }
 
         // Se passou por todas as validações, copia o dado seguro para a struct
@@ -109,7 +109,7 @@ void ler_nome()
     {
         // Lendo o nome (limite de 70 caracteres definido na struct)
         fgets(operadores[totalOperadores].nome, 71, stdin);
-        
+
         // 1ª Validação:Verificar se o nome estourou o buffer de 70 caracteres
         char *p = strchr(operadores[totalOperadores].nome, '\n');
         if (p != NULL) {
@@ -144,7 +144,7 @@ void ler_nome()
         for (int i = 0; i < strlen(operadores[totalOperadores].nome); i++)
         {
             char c = operadores[totalOperadores].nome[i];
-            
+
             // isalpha(c) verifica se é letra, c == ' ' permite o espaço entre nomes
             // Nota: isalpha pode falhar com acentos dependendo do sistema, mas protege contra números/símbolos
             if (!isalpha(c) && c != ' ')
@@ -167,7 +167,7 @@ void ler_nome()
     } while (!valido);
 }
 
-void ler_setor()
+void ler_setor(int V)
 {
     int valido = 0;
     char temp[20]; // Buffer temporário maior para capturar o excesso
@@ -176,11 +176,11 @@ void ler_setor()
     {
         // Lendo na variável temporária
         fgets(temp, sizeof(temp), stdin);
-        
+
         // Remove o '\n' se ele existir dentro do limite do buffer
         char *p = strchr(temp, '\n');
         if (p != NULL) {
-            *p = '\0'; 
+            *p = '\0';
         } else {
             // Se não achou o '\n', limpa o resto do lixo do buffer do teclado
             int c;
@@ -192,7 +192,7 @@ void ler_setor()
         {
             printf("\n\tSetor invalido! Deve conter exatamente 4 caracteres.");
             printf("\n\tDigite novamente: ");
-            continue; 
+            continue;
         }
 
         // 2ª Validação: Verificar o formato (2 letras seguidas de 2 dígitos)
@@ -203,7 +203,7 @@ void ler_setor()
         {
             printf("\n\tSetor invalido! Deve ser composto por 2 letras e 2 digitos (Ex: AB12).");
             printf("\n\tDigite novamente: ");
-            continue; 
+            continue;
         }
 
         // Converte as duas primeiras letras para maiúsculo automaticamente
@@ -226,7 +226,7 @@ void ler_nivel()
     {
         // Tenta ler o número inteiro
         nvl = scanf("%d", &operadores[totalOperadores].Nivel_Operacional);
-        
+
         // Limpa o buffer de entrada (remove o '\n' ou qualquer letra que sobrou)
         while (getchar() != '\n');
 
@@ -239,7 +239,7 @@ void ler_nivel()
         }
 
         // 2ª Validação: O número está dentro do intervalo correto (1 a 3)?
-        if (operadores[totalOperadores].Nivel_Operacional < 1 || 
+        if (operadores[totalOperadores].Nivel_Operacional < 1 ||
             operadores[totalOperadores].Nivel_Operacional > 3)
         {
             printf("\n\tOpcao invalida! Escolha entre 1, 2 ou 3.");
@@ -262,7 +262,7 @@ void ler_status()
     {
         // Tenta ler o número inteiro para o Status
         stt = scanf("%d", &operadores[totalOperadores].Status);
-        
+
         // Limpa o buffer de entrada (remove o '\n' ou qualquer caractere inválido)
         while (getchar() != '\n');
 
@@ -275,7 +275,7 @@ void ler_status()
         }
 
         // 2ª Validação: O número está dentro do intervalo correto (1 a 4)?
-        if (operadores[totalOperadores].Status < 1 || 
+        if (operadores[totalOperadores].Status < 1 ||
             operadores[totalOperadores].Status > 4)
         {
             printf("\n\tOpcao invalida! Escolha entre 1, 2, 3 ou 4.");
@@ -288,7 +288,21 @@ void ler_status()
 
     } while (!valido);
 }
-
+int ler_tipo()
+{
+    int tipo;
+    do
+    {
+        printf("\n\t1 - drone\n\t2 - sensor\n\t3 - scanner\n\t4 - braço robotico\n\n\tescolha:\t");
+        scanf("%d",&tipo);
+        if(tipo < 1 || tipo > 4)
+        {
+            printf("\n\ttipo invalido, tente novamente")
+        }
+    }
+    while(tipo < 1 || tipo > 4);
+    return tipo;
+}
 void cad_opr ()
 {
     if (totalOperadores >= 50)                          //verifica disponibilidade para cadastro
@@ -307,7 +321,7 @@ void cad_opr ()
 
     // 3. Leitura e validação do Setor
     printf("\n\tDigite o setor (2 letras e 2 digitos): ");
-    ler_setor();
+    ler_setor(1);
 
     // 4. Leitura e validação do Nível Operacional
     printf("\n\tNivel Operacional (1-Basico, 2-Intermediario, 3-Supervisor): ");
@@ -326,6 +340,40 @@ void cad_opr ()
     system("cls");
 }
 
+void cad_equip()
+{
+        if (totalEquipamentos >= 150)                          //verifica disponibilidade para cadastro
+    {
+        printf("\n\tLimite de equipamentos atingido!");
+        return;
+    }
+
+    // 1. leitura do id
+    printf("\n\tDigite o id do equipamento(1 letra e 2 digitos: ");
+    ler_setor(2);
+
+    // 2. leitura do tipo
+    printf("\n\tSelecione o tipo do equipamento:");
+    ler_tipo();
+
+    // 3. leitura do setor associado
+    printf("\n\tDigite o setor associado(2 letras e 2 digitos):");
+    ler_setor(1);
+
+    // 4. leitura do estado operacional
+    printf("\n\tSelecione o estado operacional do equipamento: ");
+    ler_estado_op();
+
+    // 5. leitura de id de operador
+    printf("\n\tDigite o id de operador: ");
+    ler_id();
+
+    // 6. leitura de nivel de prioridade
+    printf("\n\tSelecione o nivel de prioridade:");
+    ler_prioridade();
+
+
+}
 void menu()           //Criacao do menu
 {
     int escolha = -1; //variavel para escolha
@@ -382,10 +430,10 @@ void menu()           //Criacao do menu
                 system("cls");
                 break;
         }
-    } while (escolha != 0); 
+    } while (escolha != 0);
 }
 int main()
 {
-    menu();     //chama o menu 
+    menu();     //chama o menu
     return 0;   //encerra o programa
 }
